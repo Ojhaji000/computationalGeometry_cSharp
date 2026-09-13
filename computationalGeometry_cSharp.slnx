@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="computationalGeometry_cSharp.csproj" />
+  <Project Path="MathSharedLib/MathSharedLib.csproj" Id="f0d76834-2ce4-4673-9dcf-4d8aa2bf0938" />
 </Solution>
