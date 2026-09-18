@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="Geometry.TestConsole/Geometry.TestConsole.csproj" Id="492ece50-cadc-4e68-b105-1c2638e80468" />
   <Project Path="Geometry.WPFViewer/Geometry.WPFViewer.csproj" Id="9fd45169-183d-4917-a559-883b5a4e061a" />
   <Project Path="MathSharedLib/MathSharedLib.csproj" Id="f0d76834-2ce4-4673-9dcf-4d8aa2bf0938" />
 </Solution>
