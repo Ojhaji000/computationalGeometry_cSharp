@@ -2,17 +2,23 @@
 
 public class Point3D
 {
-    double x, y, z;
+    public double X { get; }
+    public double Y { get; }
+    public double Z { get; }
     public Point3D()
     {
-        x = 0;
-        y = 0;
-        z = 0;
+        X = 0;
+        Y = 0;
+        Z = 0;
     }
     public Point3D(double x, double y, double z)
     {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        X = x;
+        Y = y;
+        Z = z;
+    }
+    public static Vector3D operator -(Point3D a, Point3D b)
+    {
+        return new Vector3D(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
     }
 }

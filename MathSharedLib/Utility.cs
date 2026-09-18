@@ -22,9 +22,24 @@ public class Utility
 
     public static Side GetSideOfLineSegment(Edge line, Point3D point)
     {
-        // Implementation to determine which side of the line segment the point is on
-        return Side.NoSide;
+        Vector3D lineVector = line.EndPoint - line.StartPoint;
+        Vector3D pointVector = point - line.StartPoint;
+
+        Vector3D crossProduct = Vector3D.Cross(lineVector, pointVector);
+
+        const double _tol = 1e-6; // Tolerance for floating-point comparison
+        if (crossProduct.Z > _tol)
+        {
+            return Side.Left;
+        }
+        if (crossProduct.Z < -_tol)
+        {
+            return Side.Right;
+        }
+            return Side.OnEdge;
     }
+
+
 }
 public enum Side
 {
