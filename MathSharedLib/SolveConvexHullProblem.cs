@@ -61,31 +61,31 @@ public class SolveConvexHullProblem
     }
 
 
-    public static List<Edge> OptimisedExecute(in List<Point3D> points)
+    public static List<Edge> OptimisedExecute(in double[] points_Xs, in double[] points_Ys, in List<Edge> edges)
     {
         // Implement a more efficient convex hull algorithm here, such as Graham's scan or QuickHull.
-        List<Edge> edges = new();
-        double[] points_Xs = new double[points.Count];
-        double[] points_Ys = new double[points.Count];
-        //double[] points_Zs = new double[points.Count];
+        //List<Edge> edges = new();
+        //double[] points_Xs = new double[points.Count];
+        //double[] points_Ys = new double[points.Count];
+        ////double[] points_Zs = new double[points.Count];
 
-        for (int i = 0; i < points.Count; i++)
-        {
-            // data collection for simd
-            points_Xs[i] = points[i].X;
-            points_Ys[i] = points[i].Y;
+        //for (int i = 0; i < points.Count; i++)
+        //{
+        //    // data collection for simd
+        //    points_Xs[i] = points[i].X;
+        //    points_Ys[i] = points[i].Y;
 
-            // edge creation
-            for (int j = i+1; j < points.Count; j++)
-            {
-                edges.Add(new Edge(points[i], points[j]));
-            }
-        }
+        //    // edge creation
+        //    for (int j = i+1; j < points.Count; j++)
+        //    {
+        //        edges.Add(new Edge(points[i], points[j]));
+        //    }
+        //}
 
 
         List<Edge> convexHullEdges = new();
         int width = Vector<double>.Count;
-        int lastSIMD = points.Count - points.Count % width;
+        int lastSIMD = points_Xs.Length - points_Xs.Length % width;
 
         foreach (var edge in edges)
         {
@@ -105,19 +105,17 @@ public class SolveConvexHullProblem
             bool tobeAdded = true;
             for (int i = 0; i < lastSIMD; i += width)
             {
-                var point_Xs = new Vector<double>(points_Xs, i);
-                var point_Ys = new Vector<double>(points_Ys, i);
+                var v1 = new Vector<double>(points_Xs, i);
+                var v2 = new Vector<double>(points_Ys, i);
 
-                Vector<double> numericsVector_B_VECTOR_Xs = point_Xs - axVector;
-                Vector<double> numericsVector_B_VECTOR_Ys = point_Ys - ayVector;
+                Vector<double> numericsVector_B_VECTOR_Xs = v1 - axVector;
+                Vector<double> numericsVector_B_VECTOR_Ys = v2 - ayVector;
 
                 var cross_Z = numericsVector_A_VECTOR_Xs * numericsVector_B_VECTOR_Ys - numericsVector_A_VECTOR_Ys * numericsVector_B_VECTOR_Xs;
 
-                var positiveMask =
-    Vector.GreaterThan(cross_Z, new Vector<double>(_tol));
+                var positiveMask = Vector.GreaterThan(cross_Z, new Vector<double>(_tol));
 
-                var negativeMask =
-                    Vector.LessThan(cross_Z, new Vector<double>(-_tol));
+                var negativeMask = Vector.LessThan(cross_Z, new Vector<double>(-_tol));
                 if (hasNeg && hasPos)
                 {
                     tobeAdded = false;
@@ -125,7 +123,7 @@ public class SolveConvexHullProblem
                 }
             }
 
-            for (int i = lastSIMD; i < points.Count; i++)
+            for (int i = lastSIMD; i < points_Xs.Length; i++)
             {
                 double c =
                     dx * (points_Ys[i] - ay)

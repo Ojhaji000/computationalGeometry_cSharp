@@ -18,19 +18,37 @@ internal class Program
 [MemoryDiagnoser]
 public class ConvexHullBenchmarks
 {
-    private List<Point3D> _points;
-
+    private List<Point3D> _points = new();
+    private List<double> _points_Xs = new();
+    private List<double> _points_Ys = new();
+    private List<Edge> _edges = new();
     [GlobalSetup]
     public void Setup()
     {
-        Random rnd = new(42);
 
-        _points = Enumerable.Range(0, 1000)
-            .Select(_ => new Point3D(
+        Point3D prev = new ();
+        Point3D curr = new ();
+
+        for (int i = 0; i < 1000; i++)
+        {
+            Random rnd = new(42);
+            var tempPoint =
+            new Point3D(
                 rnd.NextDouble() * 100,
                 rnd.NextDouble() * 100,
-                0))
-            .ToList();
+                0);
+            _points.Add(tempPoint);
+            _points_Xs.Add(tempPoint.X);
+            _points_Ys.Add(tempPoint.Y);
+        }
+
+        for (int i = 0; i < _points.Count; i++)
+        {
+            for (int j = i + 1; j < _points.Count; j++)
+            {
+                _edges.Add(new Edge(_points[i], _points[j]));
+            }
+        }
     }
 
     [Benchmark]
@@ -42,6 +60,6 @@ public class ConvexHullBenchmarks
     [Benchmark]
     public List<Edge> OptimisedConvexHull()
     {
-        return SolveConvexHullProblem.OptimisedExecute(_points);
+        return SolveConvexHullProblem.OptimisedExecute(_points_Xs.ToArray(), _points_Ys.ToArray(), _edges);
     }
 }
