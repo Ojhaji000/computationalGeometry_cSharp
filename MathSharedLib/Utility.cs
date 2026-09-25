@@ -74,7 +74,7 @@ public class Utility
         List<Point3D> intersectionPoints = new ();
         for (int i = 0; i < lineSegments.Count; i++)
         {
-            for (int j = i + 1; j < lineSegments.Count; j++)
+            for (int j = 0 + 1; j < lineSegments.Count; j++)
             {
                 if (AreLineSegmentsIntersecting(lineSegments[i], lineSegments[j], out Point3D intersectionPoint))
                 {

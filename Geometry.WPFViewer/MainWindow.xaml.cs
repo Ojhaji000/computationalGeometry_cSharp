@@ -1,14 +1,10 @@
 ﻿using MathSharedLib;
 
-using System.Text;
+using System.ComponentModel.DataAnnotations;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Geometry.WPFViewer
@@ -25,7 +21,7 @@ namespace Geometry.WPFViewer
         {
             InitializeComponent();
             InitializePoints();
-            DrawAxes();
+            this.Loaded += (s, e) => DrawAxes();
         }
 
         private void InitializePoints()
@@ -75,21 +71,29 @@ namespace Geometry.WPFViewer
 
         private void DrawAxes()
         {
+            if(MyCanvas.ActualWidth is 0 || MyCanvas.ActualHeight is 0)
+            {
+                MessageBox.Show("Canvas size is not set yet. Please resize the window.", "Canvas Size Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            double centerX = MyCanvas.ActualWidth / 2;
+            double centerY = MyCanvas.ActualHeight / 2;
+
             MyCanvas.Children.Add(new Line
             {
                 X1 = 0,
-                Y1 = 300,
-                X2 = 600,
-                Y2 = 300,
+                Y1 = centerY,
+                X2 = MyCanvas.ActualWidth,
+                Y2 = centerY,
                 Stroke = Brushes.Black
             });
 
             MyCanvas.Children.Add(new Line
             {
-                X1 = 300,
+                X1 = centerX,
                 Y1 = 0,
-                X2 = 300,
-                Y2 = 600,
+                X2 = centerX,
+                Y2 = MyCanvas.ActualHeight,
                 Stroke = Brushes.Black
             });
         }
@@ -104,7 +108,7 @@ namespace Geometry.WPFViewer
                 points_Ys[i] = _points[i].Y;
             }
             var convexHullEdges = MathSharedLib.SolveConvexHullProblem.BruteExecute(_points);
-            DrawConvexHull(convexHullEdges);
+            DrawEdges(convexHullEdges);
             DrawPoints(_points);
         }
 
@@ -118,14 +122,23 @@ namespace Geometry.WPFViewer
                 points_Ys[i] = _points[i].Y;
             }
             var convexHullEdges = MathSharedLib.SolveConvexHullProblem.Execute_SIMD(points_Xs, points_Ys, _edges);
-            DrawConvexHull(convexHullEdges);
+            DrawEdges(convexHullEdges);
             DrawPoints(_points);
         }
 
         private void DrawLineIntersection()
         {
             // TODO: Implement line intersection visualization
-            //DrawPoints(_points);
+            _edges.Clear();
+            _edges = new List<Edge>()
+            {
+                new Edge(new Point3D(10,10,0), new Point3D(-10,-10,0)),
+                new Edge(new Point3D(-10,10,0), new Point3D(10,-10,0))
+
+            };
+            DrawEdges(_edges);
+            var IntersectPoints = Utility.GetIntersectionPointsFromLineSegements_BRUTE_FORCE(_edges);
+            DrawPoints(IntersectPoints, Brushes.Black);
         }
 
         private void MyCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -142,7 +155,7 @@ namespace Geometry.WPFViewer
             MyCanvas.Children.Add(point);
         }
 
-        private void DrawConvexHull(List<Edge> polygonEdges)
+        private void DrawEdges(List<Edge> polygonEdges)
         {
             foreach (var e in polygonEdges)
             {
@@ -160,15 +173,16 @@ namespace Geometry.WPFViewer
             }
         }
 
-        private void DrawPoints(List<Point3D> points)
+        private void DrawPoints(List<Point3D> points, Brush? color = null)
         {
+            color ??= Brushes.Red;
             foreach (var p in points)
             {
                 var point = new Ellipse
                 {
                     Width = 8,
                     Height = 8,
-                    Fill = Brushes.Red
+                    Fill = color
                 };
                 Canvas.SetLeft(point, p.X - point.Width / 2);
                 Canvas.SetTop(point, p.Y - point.Height / 2);
