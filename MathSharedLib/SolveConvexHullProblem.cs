@@ -3,7 +3,6 @@ namespace MathSharedLib;
 
 public class SolveConvexHullProblem
 {
-    private const double _tol = 1e-6;
     public static List<Edge> BruteExecute(List<Point3D> points)
     {
         List<Edge> edges = new();
@@ -93,9 +92,9 @@ public class SolveConvexHullProblem
 
                 var cross_Z = numericsVector_A_VECTOR_Xs * numericsVector_B_VECTOR_Ys - numericsVector_A_VECTOR_Ys * numericsVector_B_VECTOR_Xs;
 
-                var positiveMask = Vector.GreaterThan(cross_Z, new Vector<double>(_tol));
+                var positiveMask = Vector.GreaterThan(cross_Z, new Vector<double>(Configuration.TOL6));
 
-                var negativeMask = Vector.LessThan(cross_Z, new Vector<double>(-_tol));
+                var negativeMask = Vector.LessThan(cross_Z, new Vector<double>(-Configuration.TOL6));
                 for (int j = 0; j < width; j++)
                 {
                     if (positiveMask[j] != 0)
@@ -118,9 +117,9 @@ public class SolveConvexHullProblem
                     dx * (points_Ys[i] - ay)
                     - dy * (points_Xs[i] - ax);
 
-                if (c > _tol)
+                if (c > Configuration.TOL6)
                     hasPos = true;
-                else if (c < -_tol)
+                else if (c < -Configuration.TOL6)
                     hasNeg = true;
 
                 if (hasPos && hasNeg)

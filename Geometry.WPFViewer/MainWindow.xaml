@@ -5,6 +5,35 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Geometry.WPFViewer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Canvas x:Name="MyCanvas" Background="White" />
+        Title="Computational Geometry Viewer" Height="600" Width="1000">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Side Panel -->
+        <StackPanel Grid.Column="0" Background="#F0F0F0">
+            <TextBlock Text="Algorithm" FontSize="14" FontWeight="Bold" Margin="0,0,0,15"/>
+
+            <GroupBox Header="Convex Hull" Padding="10" Margin="0,0,0,15">
+                <StackPanel>
+                    <RadioButton x:Name="BruteForceRadio" Content="Brute Force" GroupName="AlgorithmGroup" Margin="0,5"/>
+                    <RadioButton x:Name="SIMDRadio" Content="SIMD Optimized" GroupName="AlgorithmGroup" Margin="0,5" IsChecked="True"/>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Intersection" Padding="10" Margin="0,0,0,15">
+                <StackPanel>
+                    <RadioButton x:Name="LineIntersectionRadio" Content="Line Intersection" GroupName="AlgorithmGroup" Margin="0,5"/>
+                </StackPanel>
+            </GroupBox>
+
+            <Button x:Name="ApplyButton" Content="Apply" Click="ApplyButton_Click" 
+                    Background="#007ACC" Foreground="White" Padding="10" FontSize="12"/>
+        </StackPanel>
+
+        <!-- Canvas Area -->
+        <Canvas x:Name="MyCanvas" Grid.Column="1" Background="White" MouseLeftButtonDown="MyCanvas_MouseLeftButtonDown"/>
+    </Grid>
 </Window>
