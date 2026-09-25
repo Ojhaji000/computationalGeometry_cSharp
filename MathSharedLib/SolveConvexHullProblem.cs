@@ -61,28 +61,8 @@ public class SolveConvexHullProblem
     }
 
 
-    public static List<Edge> OptimisedExecute(in double[] points_Xs, in double[] points_Ys, in List<Edge> edges)
+    public static List<Edge> Execute_SIMD(in double[] points_Xs, in double[] points_Ys, in List<Edge> edges)
     {
-        // Implement a more efficient convex hull algorithm here, such as Graham's scan or QuickHull.
-        //List<Edge> edges = new();
-        //double[] points_Xs = new double[points.Count];
-        //double[] points_Ys = new double[points.Count];
-        ////double[] points_Zs = new double[points.Count];
-
-        //for (int i = 0; i < points.Count; i++)
-        //{
-        //    // data collection for simd
-        //    points_Xs[i] = points[i].X;
-        //    points_Ys[i] = points[i].Y;
-
-        //    // edge creation
-        //    for (int j = i+1; j < points.Count; j++)
-        //    {
-        //        edges.Add(new Edge(points[i], points[j]));
-        //    }
-        //}
-
-
         List<Edge> convexHullEdges = new();
         int width = Vector<double>.Count;
         int lastSIMD = points_Xs.Length - points_Xs.Length % width;
@@ -116,7 +96,16 @@ public class SolveConvexHullProblem
                 var positiveMask = Vector.GreaterThan(cross_Z, new Vector<double>(_tol));
 
                 var negativeMask = Vector.LessThan(cross_Z, new Vector<double>(-_tol));
-                if (hasNeg && hasPos)
+                for (int j = 0; j < width; j++)
+                {
+                    if (positiveMask[j] != 0)
+                        hasPos = true;
+
+                    if (negativeMask[j] != 0)
+                        hasNeg = true;
+                }
+
+                if (hasPos && hasNeg)
                 {
                     tobeAdded = false;
                     break;

@@ -39,6 +39,16 @@ public class Utility
             return Side.OnEdge;
     }
 
+    public static List<Point3D> GetIntersectionPointsFromLineSegements_BRUTE_FORCE(List<Edge> lineSegments)
+    {
+        // Implementation to find intersection points from line segments using brute force
+        return new List<Point3D>();
+    }
+    public static List<Point3D> GetIntersectionPointsFromLineSegements_PLANE_SWEEP(List<Edge> lineSegments)
+    {
+        // Implementation to find intersection points from line segments using plane sweep
+        return new List<Point3D>();
+    }
 
 }
 public enum Side

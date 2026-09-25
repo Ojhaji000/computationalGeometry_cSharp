@@ -28,47 +28,6 @@ namespace Geometry.WPFViewer
 
         private void DrawExamples()
         {
-            // Line
-            //var line = new Line
-            //{
-            //    X1 = 50,
-            //    Y1 = 50,
-            //    X2 = 300,
-            //    Y2 = 150,
-            //    Stroke = Brushes.Blue,
-            //    StrokeThickness = 2
-            //};
-
-            //MyCanvas.Children.Add(line);
-
-            //// Point
-            //var point = new Ellipse
-            //{
-            //    Width = 8,
-            //    Height = 8,
-            //    Fill = Brushes.Red
-            //};
-
-            //Canvas.SetLeft(point, 100);
-            //Canvas.SetTop(point, 100);
-
-            //MyCanvas.Children.Add(point);
-
-            //// Polygon
-            //var polygon = new Polygon
-            //{
-                //Stroke = Brushes.Black,
-            //    Fill = Brushes.LightBlue,
-            //    StrokeThickness = 2
-            //};
-
-            //polygon.Points.Add(new Point(400, 50));
-            //polygon.Points.Add(new Point(600, 80));
-            //polygon.Points.Add(new Point(650, 200));
-            //polygon.Points.Add(new Point(450, 250));
-
-            //MyCanvas.Children.Add(polygon);
-
             MyCanvas.Children.Add(new Line
             {
                 X1 = 0,
@@ -95,9 +54,19 @@ namespace Geometry.WPFViewer
             new Point3D(250, 80, 0),
             new Point3D(100, 70, 0)
         };
-
-            //var convexHullEdges = MathSharedLib.SolveConvexHullProblem.BruteExecute(points);
-            var convexHullEdges = MathSharedLib.SolveConvexHullProblem.OptimisedExecute(points);
+            double[] points_Xs = new double[points.Count];
+            double[] points_Ys = new double[points.Count];
+            List<Edge> _edges = new List<Edge>();
+            for (int i = 0; i < points.Count; i++)
+            {
+                points_Xs[i] = points[i].X;
+                points_Ys[i] = points[i].Y;
+                for (int j = i + 1; j < points.Count; j++)
+                {
+                    _edges.Add(new Edge(points[i], points[j]));
+                }
+            }
+            var convexHullEdges = MathSharedLib.SolveConvexHullProblem.Execute_SIMD(points_Xs, points_Ys,_edges);
             DrawConvexHull(convexHullEdges);
             DrawPoints(points);
         }
